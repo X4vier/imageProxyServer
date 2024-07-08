@@ -20,6 +20,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/", (req, res) => {
+  res.send("proxy server ready");
+});
+
 app.get("/fetch-image", async (req, res) => {
   try {
     const imageUrl = req.query.url;
