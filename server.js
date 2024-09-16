@@ -44,18 +44,6 @@ app.get("/", (req, res) => {
   res.send("proxy server ready");
 });
 
-// Function to generate a random filename
-function generateRandomFilename() {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "image_";
-  for (let i = 0; i < 16; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result + ".png";
-}
-
-// Simple queue implementation
 class Queue {
   constructor(concurrency = 10) {
     this.concurrency = concurrency;
@@ -136,16 +124,22 @@ app.post("/proxy/v1/images/generations", async (req, res) => {
 });
 
 app.post("/proxy/v1/messages", async (req, res) => {
+  console.log("Look this is good!");
   try {
+    const requestBody = {
+      ...req.body,
+      model: "claude-3-5-sonnet-20240620",
+    };
+
     const response = await axios({
       method: "post",
       url: "https://api.anthropic.com/v1/messages",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": req.headers["x-api-key"],
-        "anthropic-version": req.headers["anthropic-version"],
+        "x-api-key": "YOUR API KEY HERE",
+        "anthropic-version": "2023-06-01",
       },
-      data: req.body,
+      data: requestBody,
       maxBodyLength: Infinity,
       maxContentLength: Infinity,
     });
@@ -176,7 +170,6 @@ app.post("/proxy/flux/generate", async (req, res) => {
       data: params,
     });
 
-    // Pass through the Flux API response
     res.json(response.data);
   } catch (error) {
     console.log("Flux API Proxy error:");
@@ -187,7 +180,6 @@ app.post("/proxy/flux/generate", async (req, res) => {
   }
 });
 
-// New route to proxy image requests if needed
 app.get("/proxy/image", async (req, res) => {
   try {
     const imageUrl = req.query.url;
