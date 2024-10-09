@@ -124,7 +124,6 @@ app.post("/proxy/v1/images/generations", async (req, res) => {
 });
 
 app.post("/proxy/v1/messages", async (req, res) => {
-  console.log("Look this is good!");
   try {
     const requestBody = {
       ...req.body,
@@ -136,7 +135,7 @@ app.post("/proxy/v1/messages", async (req, res) => {
       url: "https://api.anthropic.com/v1/messages",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": "YOUR API KEY HERE",
+        "x-api-key": req.headers["x-api-key"],
         "anthropic-version": "2023-06-01",
       },
       data: requestBody,
